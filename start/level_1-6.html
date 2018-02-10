@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>列表渲染</title>
+</head>
+
+<body>
+    <ul id="app-1">
+        <li v-for="item in items">
+            {{ item.message }}
+        </li>
+    </ul>
+
+    <ul id="app-2">
+        <li v-for="(item, index) in items">
+            {{ parentMessage }} - {{ index }} - {{ item.message }}
+        </li>
+    </ul>
+
+    <!-- v-for-object -->
+    <ul id="app-3" class="demo">
+        <!-- <li v-for="value in object">
+            {{ value }}
+        </li> -->
+        <!-- <li v-for="(value, key) in object">
+            {{ key }}:{{ value }}
+        </li> -->
+        <li v-for="(value, key, index) in object" v-bind:key="value.id">
+            {{ index }}. {{ key }}:{{ value }}
+        </li>
+    </ul>
+
+    <ul id="app-4">
+        <li v-for="n in evenNumbers">
+            {{ n }}
+        </li>
+        <!-- 一段取值范围的 v-for -->
+        <div>
+            <span v-for="n in 10">{{ n }}</span>
+        </div>
+    </ul>
+
+    <script src="../public/vue.js"></script>
+    <script>
+        // 1. 用 v-for 把一个数组对应为一组元素
+        var vm_1 = new Vue({
+            el: '#app-1',
+            data: {
+                items: [{
+                        message: 'Foo'
+                    },
+                    {
+                        message: 'Bar'
+                    }
+                ]
+            }
+        })
+
+        // 2. 在 v-for 块中，我们拥有对父作用域属性的完全访问权限。
+        /* v-for 还支持一个可选的第二个参数为当前项的索引。 */
+        var vm_2 = new Vue({
+            el: '#app-2',
+            data: {
+                parentMessage: 'Parent',
+                items: [{
+                        message: 'Foo'
+                    },
+                    {
+                        message: 'Bar'
+                    }
+                ]
+            }
+        });
+
+        // 3. 一个对象的 v-for，通过一个对象的属性来迭代
+        var vm_3 = new Vue({
+            el: '#app-3',
+            data: {
+                object: {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    age: 30
+                }
+            }
+        });
+
+        // 4. Key
+        /* 为了给 Vue 一个提示，以便它能跟踪每个节点的身份，从而重用和重新排序现有元素，需要为每项提供一个唯一 key 属性，它时每项都有的且唯一的 id */
+
+        // 5. 数组更新检测
+        // 5.1 变异方法 push()、pop()、shift()、unshift()、splice()/sort()/reverse()
+
+        // 5.2 替换数组 filter()、concat() slice()
+
+        // 5.3 注意事项
+
+        // 6. 对象更改检测注意事项
+        var vm_6 = new Vue({
+            data: {
+                a: 1,
+                userProfile: {
+                    name: 'Anika'
+                }
+            }
+        })
+        // vm_6.b = 2; // `vm.b` 不是响应式的
+        /* 对于已经创建的实例，Vue 不能动态添加根级别的响应式属性，可以使用 Vue.set(object, key, value)*/
+        Vue.set(vm_6.userProfile, 'age', 27);
+        // 添加多个属性
+        vm_6.userProfile = Object.assign({}, vm_6.userProfile, {
+            age: 27,
+            favoriteColor: 'Vue Green'
+        })
+
+        // 7. 显示过滤/排序结果
+        /* 在想要显示一个数组的过滤或排序副本，而不实际改变或重置原始数据。在这种情况下，可以创建返回过滤或排序数组的计算属性。 */
+        var vm_4 = new Vue({
+            el: '#app-4',
+            data: {
+                numbers: [1, 2, 3, 4, 5]
+            },
+            computed: {
+                evenNumbers: function () {
+                    return this.numbers.filter(function (number) {
+                        return number % 2 === 0;
+                    });
+                }
+            }
+        });
+
+        // 8. v-for on a <template>
+    </script>
+</body>
+
+</html>
